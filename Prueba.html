@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Una Sorpresa Para Ti ❤️</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #fff0f5;
+            padding-top: 100px;
+        }
+
+        #countdown {
+            font-size: 40px;
+            margin-top: 20px;
+        }
+
+        #video {
+            display: none;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎁 Algo especial está por llegar...</h1>
+    <div id="countdown"></div>
+
+    <div id="video">
+        <h2>💖 Sorpresa 💖</h2>
+        <iframe width="560" height="315" 
+            src="https://www.youtube.com/embed/VIDEO_ID_AQUI" 
+            frameborder="0" allowfullscreen>
+        </iframe>
+    </div>
+
+    <script>
+        // ⚠️ CAMBIA ESTA FECHA
+        const unlockDate = new Date("2026-03-30T00:00:00").getTime();
+
+        const countdown = document.getElementById("countdown");
+        const video = document.getElementById("video");
+
+        const timer = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = unlockDate - now;
+
+            if (distance <= 0) {
+                clearInterval(timer);
+                countdown.style.display = "none";
+                video.style.display = "block";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            countdown.innerHTML = 
+                days + "d " + hours + "h "
+                + minutes + "m " + seconds + "s ";
+        }, 1000);
+    </script>
+
+</body>
+</html>
