@@ -1,68 +1,150 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Una Sorpresa Para Ti ❤️</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #fff0f5;
-            padding-top: 100px;
-        }
+<meta charset="UTF-8">
+<title>Para Ti</title>
 
-        #countdown {
-            font-size: 40px;
-            margin-top: 20px;
-        }
+<style>
+    body {
+        margin: 0;
+        font-family: "Helvetica Neue", Arial, sans-serif;
+        background: #f8f8f8;
+        color: #222;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        text-align: center;
+    }
 
-        #video {
-            display: none;
-            margin-top: 30px;
-        }
-    </style>
+    .container {
+        max-width: 800px;
+        padding: 40px;
+    }
+
+    h1 {
+        font-weight: 300;
+        letter-spacing: 2px;
+    }
+
+    .countdown {
+        font-size: 28px;
+        margin-top: 20px;
+        letter-spacing: 1px;
+    }
+
+    .video-section {
+        margin-top: 40px;
+        opacity: 0;
+        transition: opacity 1.2s ease;
+    }
+
+    .visible {
+        opacity: 1;
+    }
+
+    iframe {
+        margin-top: 20px;
+        border-radius: 8px;
+    }
+
+    .divider {
+        margin: 60px 0;
+        height: 1px;
+        background: #ddd;
+    }
+
+</style>
 </head>
+
 <body>
 
-    <h1>🎁 Algo especial está por llegar...</h1>
-    <div id="countdown"></div>
+<div class="container">
 
-    <div id="video">
-        <h2>💖 Sorpresa 💖</h2>
-        <iframe width="560" height="315" 
-            src="https://www.youtube.com/embed/VIDEO_ID_AQUI" 
-            frameborder="0" allowfullscreen>
-        </iframe>
-    </div>
+    <h1>Algo especial está por llegar</h1>
+    <div id="mainCountdown" class="countdown"></div>
 
-    <script>
-        // ⚠️ CAMBIA ESTA FECHA
-        const unlockDate = new Date("2026-02-26T15:05:00").getTime();
+    <div id="video1Section" class="video-section"></div>
+    <div id="video2Section" class="video-section"></div>
 
-        const countdown = document.getElementById("countdown");
-        const video = document.getElementById("video");
+</div>
 
-        const timer = setInterval(function() {
-            const now = new Date().getTime();
-            const distance = unlockDate - now;
+<script>
 
-            if (distance <= 0) {
-                clearInterval(timer);
-                countdown.style.display = "none";
-                video.style.display = "block";
-                return;
-            }
+const firstDate = new Date("2026-02-26T15:28:00").getTime();
+const secondDate = new Date("2026-02-26T15:29:00").getTime();
 
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+const mainCountdown = document.getElementById("mainCountdown");
+const video1Section = document.getElementById("video1Section");
+const video2Section = document.getElementById("video2Section");
 
-            countdown.innerHTML = 
-                days + "d " + hours + "h "
-                + minutes + "m " + seconds + "s ";
-        }, 1000);
-    </script>
+let video1Shown = false;
+let video2Shown = false;
+
+const timer = setInterval(function() {
+
+    const now = new Date().getTime();
+
+    if (now < firstDate) {
+        updateCountdown(firstDate - now, "Primera sorpresa en");
+    }
+
+    else if (now >= firstDate && now < secondDate) {
+
+        if (!video1Shown) {
+            mainCountdown.innerHTML = "";
+            video1Section.innerHTML = `
+                <h2>Primera sorpresa</h2>
+                <iframe width="560" height="315"
+                src="https://www.youtube.com/embed/VIDEO1"
+                frameborder="0" allowfullscreen></iframe>
+                <div class="divider"></div>
+                <div id="secondCountdown" class="countdown"></div>
+            `;
+            video1Section.classList.add("visible");
+            video1Shown = true;
+        }
+
+        updateSecondCountdown(secondDate - now);
+    }
+
+    else if (now >= secondDate) {
+
+        if (!video2Shown) {
+            video2Section.innerHTML = `
+                <h2>Segunda sorpresa</h2>
+                <iframe width="560" height="315"
+                src="https://www.youtube.com/embed/VIDEO2"
+                frameborder="0" allowfullscreen></iframe>
+            `;
+            video2Section.classList.add("visible");
+            video2Shown = true;
+        }
+
+        clearInterval(timer);
+    }
+
+}, 1000);
+
+function updateCountdown(distance, text) {
+    mainCountdown.innerHTML = text + "<br><br>" + formatTime(distance);
+}
+
+function updateSecondCountdown(distance) {
+    document.getElementById("secondCountdown").innerHTML =
+        "Segunda sorpresa en<br><br>" + formatTime(distance);
+}
+
+function formatTime(distance) {
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    return days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+}
+
+</script>
 
 </body>
 </html>
