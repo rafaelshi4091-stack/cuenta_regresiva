@@ -3,174 +3,282 @@
 <head>
 <meta charset="UTF-8">
 <title>Para Ti</title>
-<audio id="bgMusic"></audio>
 
 <style>
-    <script>
 
-const playlist = [
-    "La Separación [Angie Vázquez] (letra  lyrics).mp3",
-    "Morat - Mi Suerte (Letra).mp3",
-    "Ela Taubert - Cómo Pasó_ (Official Video).mp3",
-    "Lasso, Cami - Un Millón Como Tú.mp3"
-];
-
-let currentTrack = 0;
-const audioPlayer = document.getElementById("bgMusic");
-
-// Configuración elegante
-audioPlayer.volume = 0.4; // volumen suave
-
-function playTrack(index) {
-    audioPlayer.src = playlist[index];
-    audioPlayer.play().catch(() => {
-        console.log("Autoplay bloqueado hasta interacción del usuario");
-    });
+body{
+margin:0;
+font-family:Helvetica, Arial, sans-serif;
+background:#f7f7f7;
+color:#222;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+text-align:center;
 }
 
-audioPlayer.addEventListener("ended", function() {
-    currentTrack = (currentTrack + 1) % playlist.length;
-    playTrack(currentTrack);
-});
+.container{
+max-width:800px;
+padding:40px;
+}
 
-</script>
-    body {
-        margin: 0;
-        font-family: "Helvetica Neue", Arial, sans-serif;
-        background: #f8f8f8;
-        color: #222;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        text-align: center;
-    }
+h1{
+font-weight:300;
+letter-spacing:2px;
+}
 
-    .container {
-        max-width: 800px;
-        padding: 40px;
-    }
+.countdown{
+font-size:28px;
+margin-top:20px;
+letter-spacing:1px;
+}
 
-    h1 {
-        font-weight: 300;
-        letter-spacing: 2px;
-    }
+.video-section{
+margin-top:40px;
+opacity:0;
+transition:opacity 1.5s ease;
+}
 
-    .countdown {
-        font-size: 28px;
-        margin-top: 20px;
-        letter-spacing: 1px;
-    }
+.visible{
+opacity:1;
+}
 
-    .video-section {
-        margin-top: 40px;
-        opacity: 0;
-        transition: opacity 1.2s ease;
-    }
+iframe{
+margin-top:20px;
+border-radius:6px;
+}
 
-    .visible {
-        opacity: 1;
-    }
+.divider{
+margin:60px 0;
+height:1px;
+background:#ddd;
+}
 
-    iframe {
-        margin-top: 20px;
-        border-radius: 8px;
-    }
+#startScreen{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#f7f7f7;
+display:flex;
+justify-content:center;
+align-items:center;
+}
 
-    .divider {
-        margin: 60px 0;
-        height: 1px;
-        background: #ddd;
-    }
+#startButton{
+padding:14px 40px;
+font-size:16px;
+border:1px solid #222;
+background:transparent;
+cursor:pointer;
+letter-spacing:2px;
+}
+
+#startButton:hover{
+background:#222;
+color:white;
+}
 
 </style>
 </head>
 
 <body>
 
+<div id="startScreen">
+<button id="startButton">Entrar</button>
+</div>
+
 <div class="container">
 
-    <h1>Algo especial está por llegar</h1>
-    <div id="mainCountdown" class="countdown"></div>
+<h1>Algo especial está por llegar</h1>
 
-    <div id="video1Section" class="video-section"></div>
-    <div id="video2Section" class="video-section"></div>
+<div id="mainCountdown" class="countdown"></div>
+
+<div id="video1Section" class="video-section"></div>
+
+<div id="video2Section" class="video-section"></div>
 
 </div>
 
+<audio id="bgMusic"></audio>
+
 <script>
 
-const firstDate = new Date("2026-03-29T15:32:00").getTime();
-const secondDate = new Date("2026-04-29T15:33:00").getTime();
+/* -----------------------------
+CONFIGURACIÓN
+----------------------------- */
+
+// Fecha video 1
+const firstDate = new Date("2026-03-29T08:00:00-04:00").getTime();
+
+// Fecha video 2
+const secondDate = new Date("2026-04-29T08:00:00-04:00").getTime();
+
+// Playlist de audio
+const playlist = [
+"audio1.mp3",
+"audio2.mp3",
+"audio3.mp3"
+];
+
+/* -----------------------------
+ELEMENTOS
+----------------------------- */
 
 const mainCountdown = document.getElementById("mainCountdown");
 const video1Section = document.getElementById("video1Section");
 const video2Section = document.getElementById("video2Section");
 
-let video1Shown = false;
-let video2Shown = false;
+const startButton = document.getElementById("startButton");
+const startScreen = document.getElementById("startScreen");
 
-const timer = setInterval(function() {
+const audioPlayer = document.getElementById("bgMusic");
 
-    const now = new Date().getTime();
+/* -----------------------------
+MÚSICA
+----------------------------- */
 
-    if (now < firstDate) {
-        updateCountdown(firstDate - now, "Primera sorpresa en");
-    }
+let currentTrack = 0;
 
-    else if (now >= firstDate && now < secondDate) {
+audioPlayer.volume = 0.4;
 
-        if (!video1Shown) {
-            mainCountdown.innerHTML = "";
-            video1Section.innerHTML = `
-                <h2>Primera sorpresa</h2>
-                <iframe width="560" height="315"
-                src="https://www.youtube.com/embed/VIDEO1"
-                frameborder="0" allowfullscreen></iframe>
-                <div class="divider"></div>
-                <div id="secondCountdown" class="countdown"></div>
-            `;
-            video1Section.classList.add("visible");
-            video1Shown = true;
-        }
+function playTrack(index){
 
-        updateSecondCountdown(secondDate - now);
-    }
+audioPlayer.src = playlist[index];
 
-    else if (now >= secondDate) {
+audioPlayer.play().catch(()=>{
+console.log("Autoplay bloqueado");
+});
 
-        if (!video2Shown) {
-            video2Section.innerHTML = `
-                <h2>Segunda sorpresa</h2>
-                <iframe width="560" height="315"
-                src="https://www.youtube.com/embed/VIDEO2"
-                frameborder="0" allowfullscreen></iframe>
-            `;
-            video2Section.classList.add("visible");
-            video2Shown = true;
-        }
-
-        clearInterval(timer);
-    }
-
-}, 1000);
-
-function updateCountdown(distance, text) {
-    mainCountdown.innerHTML = text + "<br><br>" + formatTime(distance);
 }
 
-function updateSecondCountdown(distance) {
-    document.getElementById("secondCountdown").innerHTML =
-        "Segunda sorpresa en<br><br>" + formatTime(distance);
+audioPlayer.addEventListener("ended",function(){
+
+currentTrack=(currentTrack+1)%playlist.length;
+
+playTrack(currentTrack);
+
+});
+
+/* -----------------------------
+INICIO EXPERIENCIA
+----------------------------- */
+
+startButton.addEventListener("click",function(){
+
+startScreen.style.display="none";
+
+playTrack(currentTrack);
+
+});
+
+/* -----------------------------
+CONTADOR Y VIDEOS
+----------------------------- */
+
+let video1Shown=false;
+let video2Shown=false;
+
+const timer=setInterval(function(){
+
+const now=new Date().getTime();
+
+if(now<firstDate){
+
+updateCountdown(firstDate-now,"Primera sorpresa en");
+
 }
 
-function formatTime(distance) {
-    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+else if(now>=firstDate && now<secondDate){
 
-    return days + "d " + hours + "h " + minutes + "m " + seconds + "s";
+if(!video1Shown){
+
+mainCountdown.innerHTML="";
+
+video1Section.innerHTML=`
+
+<h2>Primera sorpresa</h2>
+
+<iframe width="560" height="315"
+src="https://www.youtube.com/embed/VIDEO1"
+frameborder="0"
+allowfullscreen>
+</iframe>
+
+<div class="divider"></div>
+
+<div id="secondCountdown" class="countdown"></div>
+
+`;
+
+video1Section.classList.add("visible");
+
+video1Shown=true;
+
+}
+
+updateSecondCountdown(secondDate-now);
+
+}
+
+else if(now>=secondDate){
+
+if(!video2Shown){
+
+video2Section.innerHTML=`
+
+<h2>Segunda sorpresa</h2>
+
+<iframe width="560" height="315"
+src="https://www.youtube.com/embed/VIDEO2"
+frameborder="0"
+allowfullscreen>
+</iframe>
+
+`;
+
+video2Section.classList.add("visible");
+
+video2Shown=true;
+
+}
+
+clearInterval(timer);
+
+}
+
+},1000);
+
+/* -----------------------------
+FUNCIONES
+----------------------------- */
+
+function updateCountdown(distance,text){
+
+mainCountdown.innerHTML=text+"<br><br>"+formatTime(distance);
+
+}
+
+function updateSecondCountdown(distance){
+
+document.getElementById("secondCountdown").innerHTML="Segunda sorpresa en<br><br>"+formatTime(distance);
+
+}
+
+function formatTime(distance){
+
+const days=Math.floor(distance/(1000*60*60*24));
+
+const hours=Math.floor((distance%(1000*60*60*24))/(1000*60*60));
+
+const minutes=Math.floor((distance%(1000*60*60))/(1000*60));
+
+const seconds=Math.floor((distance%(1000*60))/1000);
+
+return days+"d "+hours+"h "+minutes+"m "+seconds+"s";
+
 }
 
 </script>
